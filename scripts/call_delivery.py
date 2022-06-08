@@ -33,9 +33,9 @@ insertion = [
 ]
 req = Request(insertion=insertion, user_info=UserInfo(log_user_id="abc"))
 request = DeliveryRequest(request=req)
-print(f"REQUEST: {request.request}")
+print(f"REQUEST: {request.request.to_json()}")  # type: ignore
 
 print()
 
 resp = client.deliver(request)
-print(f"RESPONSE: {resp.response}")
+print(f"RESPONSE: {resp.response.to_json()}")  # type: ignore

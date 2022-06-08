@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from dataclasses_json import dataclass_json, LetterCase
+from dataclasses import dataclass, field
+from dataclasses_json import config, dataclass_json, LetterCase
 from typing import List, Optional
 from promoted_python_delivery_client.model.blender_config import BlenderConfig
 from promoted_python_delivery_client.model.client_info import ClientInfo
@@ -15,18 +15,18 @@ from promoted_python_delivery_client.model.user_info import UserInfo
 @dataclass
 class Request:
     insertion: List[Insertion]
-    user_info: Optional[UserInfo] = None
-    client_request_id: Optional[str] = None
-    request_id: Optional[str] = None
-    client_info: Optional[ClientInfo] = None
-    search_query: Optional[str] = None
-    use_case: Optional[UseCase] = None
-    auto_view_id: Optional[str] = None
-    blender_config: Optional[BlenderConfig] = None
-    debug: Optional[bool] = None
-    paging: Optional[Paging] = None
-    platform_id: Optional[int] = None
-    properties: Optional[Properties] = None
-    session_id: Optional[str] = None
-    timing: Optional[Timing] = None
-    view_id: Optional[str] = None
+    user_info: Optional[UserInfo] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
+    client_request_id: Optional[str] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
+    request_id: Optional[str] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
+    client_info: Optional[ClientInfo] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
+    search_query: Optional[str] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
+    use_case: Optional[UseCase] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
+    auto_view_id: Optional[str] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
+    blender_config: Optional[BlenderConfig] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
+    debug: Optional[bool] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
+    paging: Optional[Paging] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
+    platform_id: Optional[int] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
+    properties: Optional[Properties] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
+    session_id: Optional[str] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
+    timing: Optional[Timing] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
+    view_id: Optional[str] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore

@@ -32,6 +32,12 @@ DEFAULT_METRICS_THREAD_POOL_SIZE = 5
 # Default number of maximum request insertion passed to Delivery API.
 DEFAULT_MAX_REQUEST_INSERTIONS = 1000
 
+# Default timeout for metrics calls.
+DEFAULT_METRICS_TIMEOUT_MILLIS = 3000
+
+# Default timeout for delivery calls.
+DEFAULT_DELIVERY_TIMEOUT_MILLIS = 250
+
 
 class PromotedDeliveryClient:
     def __init__(self,
@@ -39,11 +45,11 @@ class PromotedDeliveryClient:
                  delivery_api_key: str,
                  metrics_endpoint: str,
                  metrics_api_key: str,
-                 delivery_timeout_millis: Optional[int] = None,
-                 metrics_timeout_millis: Optional[int] = None,
-                 max_request_insertions: Optional[int] = DEFAULT_MAX_REQUEST_INSERTIONS,
-                 shadow_traffic_delivery_rate: Optional[float] = 0,
-                 perform_checks: Optional[bool] = False) -> None:
+                 delivery_timeout_millis: int = DEFAULT_DELIVERY_TIMEOUT_MILLIS,
+                 metrics_timeout_millis: int = DEFAULT_METRICS_TIMEOUT_MILLIS,
+                 max_request_insertions: int = DEFAULT_MAX_REQUEST_INSERTIONS,
+                 shadow_traffic_delivery_rate: float = 0,
+                 perform_checks: bool = False) -> None:
         self.metrics_endpoint = metrics_endpoint
         self.metrics_api_key = metrics_api_key
         self.metrics_timeout_millis = metrics_timeout_millis
@@ -172,7 +178,7 @@ class PromotedDeliveryClient:
         return cohort_membership
 
     def _should_send_shadow_traffic(self) -> bool:
-        return self.shadow_traffic_delivery_rate is not None and self.shadow_traffic_delivery_rate> 0 and self.sampler.sample_random(self.shadow_traffic_delivery_rate)
+        return self.shadow_traffic_delivery_rate > 0 and self.sampler.sample_random(self.shadow_traffic_delivery_rate)
 
     def _fill_request_fields(self, request: Request) -> None:
         if request.client_info is None:

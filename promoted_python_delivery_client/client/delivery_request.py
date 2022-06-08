@@ -9,5 +9,5 @@ from promoted_python_delivery_client.model.request import Request
 class DeliveryRequest:
     request: Request
     experiment: Optional[CohortMembership] = None
-    only_log: Optional[bool] = False
-    insertion_page_type: Optional[InsertionPageType] = InsertionPageType.UNPAGED
+    only_log: bool = False
+    insertion_page_type: InsertionPageType = InsertionPageType.UNPAGED

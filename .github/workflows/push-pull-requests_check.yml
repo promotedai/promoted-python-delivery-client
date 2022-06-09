@@ -1,0 +1,24 @@
+name: Pull-Requests Check
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - scott/unittests
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+          bundler-cache: true
+
+      - name: Build and test with pytest
+        run: pytest tests/

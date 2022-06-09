@@ -37,6 +37,7 @@ setup(
     packages=["promoted_python_delivery_client", "promoted_python_delivery_client.client", "promoted_python_delivery_client.model"],
     include_package_data=True,
     install_requires=["ujson", "dataclasses_json"],
+    setup_requires=['pytest-runner'],
     tests_require=["pytest"],
     test_suite="tests",
 )

@@ -1,6 +1,7 @@
 import logging
 import requests
 from promoted_python_delivery_client.client.delivery_request import DeliveryRequest
+from promoted_python_delivery_client.client.delivery_request_state import DeliveryRequestState
 from promoted_python_delivery_client.model.response import Response
 
 
@@ -8,13 +9,17 @@ class APIDelivery:
     def __init__(self,
                  endpoint: str,
                  api_key: str,
-                 timeout: int) -> None:
+                 timeout: int,
+                 max_request_insertions: int) -> None:
         self.endpoint = endpoint
+        self.max_request_insertions = max_request_insertions
         self.headers = {"x-api-key": api_key}
         self.timeout_in_seconds = timeout / 1000
 
     def run_delivery(self, delivery_request: DeliveryRequest) -> Response:
-        request = delivery_request.request
+        state = DeliveryRequestState(delivery_request)
+
+        request = state.get_request_to_send(self.max_request_insertions)
         payload = request.to_json()  # type: ignore this is from dataclass_json
         r = requests.post(url=self.endpoint,
                           data=payload,
@@ -23,4 +28,4 @@ class APIDelivery:
         if r.status_code != 200:
             logging.error(f"Error calling delivery API {r.status_code}")
             raise requests.HTTPError("error calling delivery API")
-        return Response.from_json(r.content)  # type: ignore this is from dataclass_json
+        return state.get_response_to_return(Response.from_json(r.content))  # type: ignore this is from dataclass_json

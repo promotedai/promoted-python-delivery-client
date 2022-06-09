@@ -56,7 +56,7 @@ class PromotedDeliveryClient:
         self.max_request_insertions = max_request_insertions
         self.sampler = Sampler()
         self.sdk_delivery = SDKDelivery()
-        self.api_delivery = APIDelivery(delivery_endpoint, delivery_api_key, delivery_timeout_millis)
+        self.api_delivery = APIDelivery(delivery_endpoint, delivery_api_key, delivery_timeout_millis, max_request_insertions)
         self.api_metrics = APIMetrics(metrics_endpoint, metrics_api_key, metrics_timeout_millis)
 
         if shadow_traffic_delivery_rate is not None and (shadow_traffic_delivery_rate < 0 or shadow_traffic_delivery_rate > 1):
@@ -106,12 +106,11 @@ class PromotedDeliveryClient:
         except Exception as ex:
             logging.error("Error logging to metrics", exc_info=ex)
 
-
     def _create_log_request(self,
-                        delivery_request: DeliveryRequest,
-                        response: Response,
-                        cohort_membership: Optional[CohortMembership],
-                        exec_svr: ExecutionServer) -> LogRequest:
+                            delivery_request: DeliveryRequest,
+                            response: Response,
+                            cohort_membership: Optional[CohortMembership],
+                            exec_svr: ExecutionServer) -> LogRequest:
         request = delivery_request.request
 
         delivery_logs: List[DeliveryLog] = []
@@ -162,19 +161,7 @@ class PromotedDeliveryClient:
             return None
         cohort_membership = CohortMembership(
             request.experiment.cohort_id,
-            request.experiment.arm,
-            request.experiment.platform_id,
-            request.experiment.user_info,
-            request.experiment.timing)
-
-        # Fall back to request values for things not set on the experiment.
-        if cohort_membership.platform_id is None:
-            cohort_membership.platform_id = request.request.platform_id
-        if cohort_membership.user_info is None:
-            cohort_membership.user_info = request.request.user_info
-        if cohort_membership.timing is None:
-            cohort_membership.timing = request.request.timing
-
+            request.experiment.arm)
         return cohort_membership
 
     def _should_send_shadow_traffic(self) -> bool:

@@ -31,7 +31,7 @@ class SDKDelivery:
         final_insertion_size = min(size, len(req.insertion) - index)
         insertion_page: List[Insertion] = []
         for i in range(0, final_insertion_size):
-            ins = req.insertion[i]
+            ins = req.insertion[index]
             self._prepare_response_insertion(ins, offset)
             insertion_page.append(ins)
             index = index + 1

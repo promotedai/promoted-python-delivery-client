@@ -10,4 +10,5 @@ class Sampler:
             return True
         if threshold <= 0:
             return False
-        return random.uniform(0, 1) < threshold
+        sample = random.uniform(0, 1)
+        return sample < threshold

@@ -34,7 +34,12 @@ Python client SDK for the Promoted.ai Delivery API
 
 ## Release
 
+- Create a development branch
 - `bump2version [major|minor|patch]`
+- Send a pull request and merge.
+- `python3 -m twine upload dist/*`
+  - [PyPi](https://pypi.org/project/promoted-python-delivery-client/)
+  - FUTURE: Do this with a Github Action.
 
 ## Dependencies
 

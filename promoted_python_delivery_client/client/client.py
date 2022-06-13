@@ -7,6 +7,7 @@ import uuid
 from promoted_python_delivery_client.client.api_delivery import APIDelivery
 from promoted_python_delivery_client.client.api_metrics import APIMetrics
 from promoted_python_delivery_client.client.delivery_request import DeliveryRequest
+from promoted_python_delivery_client.client.delivery_request_validator import DeliveryRequestValidator
 from promoted_python_delivery_client.client.delivery_response import DeliveryResponse
 from promoted_python_delivery_client.client.sampler import Sampler
 from promoted_python_delivery_client.client.sdk_delivery import SDKDelivery
@@ -69,6 +70,12 @@ class PromotedDeliveryClient:
 
     def deliver(self, request: DeliveryRequest) -> DeliveryResponse:
         should_send_shadow_traffic = self._should_send_shadow_traffic()
+
+        if self.perform_checks:
+            validation_errors = request.validate(should_send_shadow_traffic)
+            for validation_error in validation_errors:
+                logging.warning(f"Delivery Request Validation Error: {validation_error}")
+
         exec_svr = ExecutionServer.SDK
         cohort_membership = self._check_cohort_membership(request)
         attempted_delivery_api = False

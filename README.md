@@ -7,6 +7,7 @@ Python client SDK for the Promoted.ai Delivery API
 - wheel
 - setuptools
 - twine
+- [bump2version](https://github.com/c4urself/bump2version/)
 
 ## Development
 
@@ -30,3 +31,16 @@ Python client SDK for the Promoted.ai Delivery API
 
 - Use pytest:
   - `pytest tests/`
+
+## Release
+
+- Create a development branch
+- `bump2version [major|minor|patch]`
+- Send a pull request and merge.
+- `python3 -m twine upload dist/*`
+  - [PyPi](https://pypi.org/project/promoted-python-delivery-client/)
+  - FUTURE: Do this with a Github Action.
+
+## Dependencies
+
+- [dataclasses-json](https://github.com/lidatong/dataclasses-json) -- flexible JSON serialization and deserialization of Python dataclasses. One key feature we use is the ability to omit None's (nulls) from request JSON to decrease payload size.

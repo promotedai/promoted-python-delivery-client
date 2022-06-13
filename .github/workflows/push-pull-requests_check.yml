@@ -1,0 +1,29 @@
+name: Pull-Requests Check
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+          bundler-cache: true
+
+      - name: Setup venv
+        run: |
+          pip install --upgrade pip
+          python3 -m venv env
+          source env/bin/activate
+
+      - name: Build and test with pytest
+        run: python3 setup.py pytest

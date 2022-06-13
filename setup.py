@@ -15,7 +15,7 @@ with open(path.join(HERE, 'README.md'), encoding='utf-8') as f:
 # This call to setup() does all the work
 setup(
     name="promoted-python-delivery-client",
-    version="0.1.0",
+    version="0.0.0",
     description="Promoted.ai Python Delivery Client",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -36,7 +36,8 @@ setup(
     ],
     packages=["promoted_python_delivery_client", "promoted_python_delivery_client.client", "promoted_python_delivery_client.model"],
     include_package_data=True,
-    install_requires=["ujson", "dataclasses_json"],
+    install_requires=["dataclasses_json"],
+    setup_requires=['pytest-runner'],
     tests_require=["pytest"],
     test_suite="tests",
 )

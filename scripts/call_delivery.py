@@ -19,7 +19,8 @@ client = PromotedDeliveryClient(delivery_endpoint=delivery_endpoint,
                                 delivery_api_key=delivery_api_key,
                                 delivery_timeout_millis=60*1000,
                                 metrics_endpoint=metrics_endpoint,
-                                metrics_api_key=metrics_api_key)
+                                metrics_api_key=metrics_api_key,
+                                only_log_metrics_request=True)
 
 insertion = [
   Insertion(content_id="28835"),
@@ -33,9 +34,11 @@ insertion = [
 ]
 req = Request(insertion=insertion, user_info=UserInfo(log_user_id="abc"))
 request = DeliveryRequest(request=req)
-print(f"REQUEST: {request.request.to_json()}")  # type: ignore
+print(f"DELIVERY REQUEST: {request.request.to_json()}")  # type: ignore
 
 print()
 
 resp = client.deliver(request)
-print(f"RESPONSE: {resp.response.to_json()}")  # type: ignore
+print(f"DELIVERY RESPONSE: {resp.response.to_json()}")  # type: ignore
+
+client.executor.shutdown()

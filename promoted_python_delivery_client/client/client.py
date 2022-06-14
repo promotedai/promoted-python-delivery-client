@@ -51,12 +51,14 @@ class PromotedDeliveryClient:
                  max_request_insertions: int = DEFAULT_MAX_REQUEST_INSERTIONS,
                  shadow_traffic_delivery_rate: float = 0,
                  perform_checks: bool = False,
+                 only_log_metrics_request: bool = False,
                  apply_treatment_checker: Optional[Callable[[Optional[CohortMembership]], bool]] = None):
         self.metrics_endpoint = metrics_endpoint
         self.metrics_api_key = metrics_api_key
         self.metrics_timeout_millis = metrics_timeout_millis
         self.max_request_insertions = max_request_insertions
         self.sampler = Sampler()
+        self.only_log_metrics_request = only_log_metrics_request
         self.apply_treatment_checker = apply_treatment_checker
         self.sdk_delivery = SDKDelivery()
         self.api_delivery = APIDelivery(delivery_endpoint, delivery_api_key, delivery_timeout_millis, max_request_insertions)
@@ -111,10 +113,13 @@ class PromotedDeliveryClient:
                         cohort_membership: Optional[CohortMembership],
                         exec_svr: ExecutionServer) -> None:
         log_request = self._create_log_request(delivery_request, response, cohort_membership, exec_svr)
-        try:
-            self.api_metrics.run_metrics_logging(log_request)
-        except Exception as ex:
-            logging.error("Error logging to metrics", exc_info=ex)
+        if self.only_log_metrics_request:
+            logging.info(f"LOG REQUEST: {log_request.to_json()}")  # type: ignore
+        else:
+            try:
+                self.api_metrics.run_metrics_logging(log_request)
+            except Exception as ex:
+                logging.error("Error logging to metrics", exc_info=ex)
 
     def _create_log_request(self,
                             delivery_request: DeliveryRequest,

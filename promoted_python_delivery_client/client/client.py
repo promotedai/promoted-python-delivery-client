@@ -51,14 +51,14 @@ class PromotedDeliveryClient:
                  max_request_insertions: int = DEFAULT_MAX_REQUEST_INSERTIONS,
                  shadow_traffic_delivery_rate: float = 0,
                  perform_checks: bool = False,
-                 only_log_metrics_request: bool = False,
+                 only_send_metrics_request_to_logger: bool = False,
                  apply_treatment_checker: Optional[Callable[[Optional[CohortMembership]], bool]] = None):
         self.metrics_endpoint = metrics_endpoint
         self.metrics_api_key = metrics_api_key
         self.metrics_timeout_millis = metrics_timeout_millis
         self.max_request_insertions = max_request_insertions
         self.sampler = Sampler()
-        self.only_log_metrics_request = only_log_metrics_request
+        self.only_send_metrics_request_to_logger = only_send_metrics_request_to_logger
         self.apply_treatment_checker = apply_treatment_checker
         self.sdk_delivery = SDKDelivery()
         self.api_delivery = APIDelivery(delivery_endpoint, delivery_api_key, delivery_timeout_millis, max_request_insertions)
@@ -116,7 +116,7 @@ class PromotedDeliveryClient:
                         cohort_membership: Optional[CohortMembership],
                         exec_svr: ExecutionServer) -> None:
         log_request = self._create_log_request(delivery_request, response, cohort_membership, exec_svr)
-        if self.only_log_metrics_request:
+        if self.only_send_metrics_request_to_logger:
             logging.info(f"LOG REQUEST: {log_request.to_json()}")  # type: ignore
         else:
             try:

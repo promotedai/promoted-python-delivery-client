@@ -24,7 +24,7 @@ client = PromotedDeliveryClient(delivery_endpoint=delivery_endpoint,
                                 delivery_timeout_millis=60*1000,
                                 metrics_endpoint=metrics_endpoint,
                                 metrics_api_key=metrics_api_key,
-                                only_log_metrics_request=True)
+                                only_send_metrics_request_to_logger=True)
 
 insertion = [
   Insertion(content_id="28835"),

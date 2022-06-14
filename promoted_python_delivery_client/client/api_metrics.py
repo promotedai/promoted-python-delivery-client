@@ -1,5 +1,4 @@
 import logging
-import jsonpickle
 import requests
 from promoted_python_delivery_client.model.log_request import LogRequest
 
@@ -14,7 +13,7 @@ class APIMetrics:
         self.timeout_in_seconds = timeout / 1000
 
     def run_metrics_logging(self, log_request: LogRequest) -> None:
-        payload = jsonpickle.encode(log_request, unpicklable=False)
+        payload = log_request.to_json()  # type: ignore this is from dataclass_json
         r = requests.post(url=self.endpoint,
                           data=payload,
                           timeout=self.timeout_in_seconds,

@@ -1,5 +1,7 @@
+import logging
 import os
 from os.path import dirname, abspath
+import sys
 from promoted_python_delivery_client.client.client import PromotedDeliveryClient
 from promoted_python_delivery_client.client.delivery_request import DeliveryRequest
 from promoted_python_delivery_client.model.insertion import Insertion
@@ -10,6 +12,8 @@ from dotenv import load_dotenv
 path = dirname(abspath(__file__)) + '/.env'
 load_dotenv(path)
 
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+
 delivery_endpoint = str(os.getenv("DELIVERY_ENDPOINT"))
 delivery_api_key = str(os.getenv("DELIVERY_API_KEY"))
 metrics_endpoint = str(os.getenv("METRICS_ENDPOINT"))
@@ -19,7 +23,8 @@ client = PromotedDeliveryClient(delivery_endpoint=delivery_endpoint,
                                 delivery_api_key=delivery_api_key,
                                 delivery_timeout_millis=60*1000,
                                 metrics_endpoint=metrics_endpoint,
-                                metrics_api_key=metrics_api_key)
+                                metrics_api_key=metrics_api_key,
+                                only_send_metrics_request_to_logger=True)
 
 insertion = [
   Insertion(content_id="28835"),
@@ -33,9 +38,13 @@ insertion = [
 ]
 req = Request(insertion=insertion, user_info=UserInfo(log_user_id="abc"))
 request = DeliveryRequest(request=req)
-print(f"REQUEST: {request.request.to_json()}")  # type: ignore
+print(f"DELIVERY REQUEST: {request.request.to_json()}")  # type: ignore
 
 print()
 
 resp = client.deliver(request)
-print(f"RESPONSE: {resp.response.to_json()}")  # type: ignore
+print(f"DELIVERY RESPONSE: {resp.response.to_json()}")  # type: ignore
+
+print()
+
+client.shutdown()

@@ -23,6 +23,9 @@ def test_no_paging_returns_all():
     assert req.request_id is not None
     assert len(req.request_id) > 0
     assert len(resp.insertion) == 10
+    for i in range(0, 10):
+        assert resp.insertion[i].position == i
+        assert resp.insertion[i].insertion_id
 
 
 def test_paging_zero_size_returns_all():
@@ -33,6 +36,9 @@ def test_paging_zero_size_returns_all():
     assert req.request_id is not None
     assert len(req.request_id) > 0
     assert len(resp.insertion) == 10
+    for i in range(0, 10):
+        assert resp.insertion[i].position == i
+        assert resp.insertion[i].insertion_id
 
 
 def test_paging_zero_offset():
@@ -45,6 +51,7 @@ def test_paging_zero_offset():
     assert len(resp.insertion) == 5
     for i in range(0, 5):
         assert resp.insertion[i].position == i
+        assert resp.insertion[i].insertion_id
 
 
 def test_paging_non_zero_offset():
@@ -57,6 +64,7 @@ def test_paging_non_zero_offset():
     assert len(resp.insertion) == 5
     for i in range(5, 10):
         assert resp.insertion[i-5].position == i
+        assert resp.insertion[i-5].insertion_id
 
 
 def test_paging_size_more_than_insertions():
@@ -69,6 +77,7 @@ def test_paging_size_more_than_insertions():
     assert len(resp.insertion) == 10
     for i in range(0, 10):
         assert resp.insertion[i].position == i
+        assert resp.insertion[i].insertion_id
 
 
 def test_pre_paged():
@@ -81,3 +90,4 @@ def test_pre_paged():
     assert len(resp.insertion) == 10
     for i in range(0, 10):
         assert resp.insertion[i].position == i+5
+        assert resp.insertion[i].insertion_id

@@ -44,3 +44,4 @@ Python client SDK for the Promoted.ai Delivery API
 ## Dependencies
 
 - [dataclasses-json](https://github.com/lidatong/dataclasses-json) -- flexible JSON serialization and deserialization of Python dataclasses. One key feature we use is the ability to omit None's (nulls) from request JSON to decrease payload size.
+- requests -- defacto standard HTTP library used to call Promoted APIs.

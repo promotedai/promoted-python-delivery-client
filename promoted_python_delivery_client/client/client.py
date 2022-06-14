@@ -1,7 +1,7 @@
 import concurrent.futures
 import copy
 import logging
-from typing import List, Optional
+from typing import Callable, List, Optional
 import time
 import uuid
 from promoted_python_delivery_client.client.api_delivery import APIDelivery
@@ -50,12 +50,14 @@ class PromotedDeliveryClient:
                  metrics_timeout_millis: int = DEFAULT_METRICS_TIMEOUT_MILLIS,
                  max_request_insertions: int = DEFAULT_MAX_REQUEST_INSERTIONS,
                  shadow_traffic_delivery_rate: float = 0,
-                 perform_checks: bool = False) -> None:
+                 perform_checks: bool = False,
+                 apply_treatment_checker: Optional[Callable[[Optional[CohortMembership]], bool]] = None):
         self.metrics_endpoint = metrics_endpoint
         self.metrics_api_key = metrics_api_key
         self.metrics_timeout_millis = metrics_timeout_millis
         self.max_request_insertions = max_request_insertions
         self.sampler = Sampler()
+        self.apply_treatment_checker = apply_treatment_checker
         self.sdk_delivery = SDKDelivery()
         self.api_delivery = APIDelivery(delivery_endpoint, delivery_api_key, delivery_timeout_millis, max_request_insertions)
         self.api_metrics = APIMetrics(metrics_endpoint, metrics_api_key, metrics_timeout_millis)
@@ -67,12 +69,13 @@ class PromotedDeliveryClient:
         self.perform_checks = perform_checks if perform_checks is not None else False
 
         self.executor = concurrent.futures.ThreadPoolExecutor(DEFAULT_METRICS_THREAD_POOL_SIZE)
+        self.request_validator = DeliveryRequestValidator()
 
     def deliver(self, request: DeliveryRequest) -> DeliveryResponse:
         should_send_shadow_traffic = self._should_send_shadow_traffic()
 
         if self.perform_checks:
-            validation_errors = request.validate(should_send_shadow_traffic)
+            validation_errors = self.request_validator.validate(request, should_send_shadow_traffic)
             for validation_error in validation_errors:
                 logging.warning(f"Delivery Request Validation Error: {validation_error}")
 
@@ -159,6 +162,8 @@ class PromotedDeliveryClient:
             logging.error("Error sending shadow traffic", exc_info=ex)
 
     def _should_apply_treatment(self, cohort_membership: Optional[CohortMembership] = None) -> bool:
+        if self.apply_treatment_checker is not None:
+            return self.apply_treatment_checker(cohort_membership)
         if cohort_membership is None:
             return True
         return cohort_membership.arm is None or cohort_membership.arm != CohortArm.CONTROL

@@ -73,6 +73,9 @@ class PromotedDeliveryClient:
         self.executor = concurrent.futures.ThreadPoolExecutor(DEFAULT_METRICS_THREAD_POOL_SIZE)
         self.request_validator = DeliveryRequestValidator()
 
+    def shutdown(self):
+        self.executor.shutdown(wait=True)
+
     def deliver(self, request: DeliveryRequest) -> DeliveryResponse:
         should_send_shadow_traffic = self._should_send_shadow_traffic()
 

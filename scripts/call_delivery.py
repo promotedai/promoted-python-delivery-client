@@ -1,5 +1,7 @@
+import logging
 import os
 from os.path import dirname, abspath
+import sys
 from promoted_python_delivery_client.client.client import PromotedDeliveryClient
 from promoted_python_delivery_client.client.delivery_request import DeliveryRequest
 from promoted_python_delivery_client.model.insertion import Insertion
@@ -9,6 +11,8 @@ from dotenv import load_dotenv
 
 path = dirname(abspath(__file__)) + '/.env'
 load_dotenv(path)
+
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 delivery_endpoint = str(os.getenv("DELIVERY_ENDPOINT"))
 delivery_api_key = str(os.getenv("DELIVERY_API_KEY"))
@@ -41,4 +45,6 @@ print()
 resp = client.deliver(request)
 print(f"DELIVERY RESPONSE: {resp.response.to_json()}")  # type: ignore
 
-client.executor.shutdown()
+print()
+
+client.shutdown()

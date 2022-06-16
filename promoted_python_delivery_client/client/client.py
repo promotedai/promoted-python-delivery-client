@@ -23,12 +23,10 @@ from promoted_python_delivery_client.model.request import Request
 from promoted_python_delivery_client.model.response import Response
 from promoted_python_delivery_client.model.timing import Timing
 from promoted_python_delivery_client.model.traffic_type import TrafficType
-
-
-SERVER_VERSION = "python.1.0.0"
+from promoted_python_delivery_client.client.version import SERVER_VERSION
 
 # Executor to run metrics logging in the background.
-DEFAULT_METRICS_THREAD_POOL_SIZE = 5
+DEFAULT_THREAD_POOL_SIZE = 5
 
 # Default number of maximum request insertion passed to Delivery API.
 DEFAULT_MAX_REQUEST_INSERTIONS = 1000
@@ -52,6 +50,7 @@ class PromotedDeliveryClient:
                  shadow_traffic_delivery_rate: float = 0,
                  perform_checks: bool = False,
                  only_send_metrics_request_to_logger: bool = False,
+                 thread_pool_size: int = DEFAULT_THREAD_POOL_SIZE,
                  apply_treatment_checker: Optional[Callable[[Optional[CohortMembership]], bool]] = None):
         self.metrics_endpoint = metrics_endpoint
         self.metrics_api_key = metrics_api_key
@@ -70,7 +69,7 @@ class PromotedDeliveryClient:
 
         self.perform_checks = perform_checks if perform_checks is not None else False
 
-        self.executor = concurrent.futures.ThreadPoolExecutor(DEFAULT_METRICS_THREAD_POOL_SIZE)
+        self.executor = concurrent.futures.ThreadPoolExecutor(thread_pool_size)
         self.request_validator = DeliveryRequestValidator()
 
     def shutdown(self):

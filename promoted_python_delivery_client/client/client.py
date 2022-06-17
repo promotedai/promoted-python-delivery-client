@@ -51,6 +51,7 @@ class PromotedDeliveryClient:
                  perform_checks: bool = False,
                  only_send_metrics_request_to_logger: bool = False,
                  thread_pool_size: int = DEFAULT_THREAD_POOL_SIZE,
+                 warmup: bool = False,
                  apply_treatment_checker: Optional[Callable[[Optional[CohortMembership]], bool]] = None):
         self.metrics_endpoint = metrics_endpoint
         self.metrics_api_key = metrics_api_key
@@ -60,7 +61,7 @@ class PromotedDeliveryClient:
         self.only_send_metrics_request_to_logger = only_send_metrics_request_to_logger
         self.apply_treatment_checker = apply_treatment_checker
         self.sdk_delivery = SDKDelivery()
-        self.api_delivery = APIDelivery(delivery_endpoint, delivery_api_key, delivery_timeout_millis, max_request_insertions)
+        self.api_delivery = APIDelivery(delivery_endpoint, delivery_api_key, delivery_timeout_millis, max_request_insertions, warmup)
         self.api_metrics = APIMetrics(metrics_endpoint, metrics_api_key, metrics_timeout_millis)
 
         if shadow_traffic_delivery_rate is not None and (shadow_traffic_delivery_rate < 0 or shadow_traffic_delivery_rate > 1):

@@ -7,8 +7,10 @@ class DummyExecutor(Executor):
     def __init__(self):
         self._shutdown = False
         self._shutdownLock = Lock()
+        self.calls = 0
 
     def submit(self, fn, *args, **kwargs):
+        self.calls = self.calls + 1
         with self._shutdownLock:
             if self._shutdown:
                 raise RuntimeError('cannot schedule new futures after shutdown')

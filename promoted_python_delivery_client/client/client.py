@@ -52,11 +52,13 @@ class PromotedDeliveryClient:
                  only_send_metrics_request_to_logger: bool = False,
                  thread_pool_size: int = DEFAULT_THREAD_POOL_SIZE,
                  warmup: bool = False,
-                 apply_treatment_checker: Optional[Callable[[Optional[CohortMembership]], bool]] = None):
+                 apply_treatment_checker: Optional[Callable[[Optional[CohortMembership]], bool]] = None,
+                 blocking_shadow_traffic: bool = False):
         self.metrics_endpoint = metrics_endpoint
         self.metrics_api_key = metrics_api_key
         self.metrics_timeout_millis = metrics_timeout_millis
         self.max_request_insertions = max_request_insertions
+        self.blocking_shadow_traffic = blocking_shadow_traffic
         self.sampler = Sampler()
         self.only_send_metrics_request_to_logger = only_send_metrics_request_to_logger
         self.apply_treatment_checker = apply_treatment_checker
@@ -106,7 +108,10 @@ class PromotedDeliveryClient:
 
         # Check to see if we should do shadow traffic.
         if (not attempted_delivery_api) and should_send_shadow_traffic:
-            self.executor.submit(self._deliver_shadow_traffic, request)
+            if self.blocking_shadow_traffic:
+                self._deliver_shadow_traffic(request)
+            else:
+                self.executor.submit(self._deliver_shadow_traffic, request)
 
         return DeliveryResponse(resp, request.request.client_request_id, exec_svr)
 

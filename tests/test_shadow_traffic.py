@@ -29,6 +29,9 @@ def test_send_shadow_traffic_for_only_log_sampled_in(mocker: MockerFixture):
     metrics_patch.assert_called_once()
     api_patch.assert_called_once()
 
+    # There should be two executor calls, one from metrics and one from shadow traffic.
+    assert client.executor.calls == 2  # type: ignore
+
     dreq: DeliveryRequest = api_patch.call_args[0][0]
     assert dreq.request.client_info is not None
     assert dreq.request.client_info.traffic_type == TrafficType.SHADOW
@@ -118,6 +121,34 @@ def test_dont_send_shadow_traffic_for_only_log_when_turned_off(mocker: MockerFix
     sdk_patch.assert_called_once()
     metrics_patch.assert_called_once()
     api_patch.assert_not_called()
+
+
+def test_blocking_shadow_traffic(mocker: MockerFixture):
+    api_patch = mocker.patch("promoted_python_delivery_client.client.api_delivery.APIDelivery.run_delivery")
+    sdk_patch = mocker.patch("promoted_python_delivery_client.client.sdk_delivery.SDKDelivery.run_delivery")
+    metrics_patch = mocker.patch("promoted_python_delivery_client.client.api_metrics.APIMetrics.run_metrics_logging")
+    uniform_patch = mocker.patch("random.uniform")
+
+    client = create_default_client(0.5)
+    client.blocking_shadow_traffic = True
+
+    req = Request(insertion=create_test_request_insertions(10), client_info=ClientInfo(traffic_type=TrafficType.PRODUCTION))
+    dreq = DeliveryRequest(request=req, only_log=True)
+
+    uniform_patch.return_value = 0.3  # sampled in
+
+    client.deliver(dreq)
+
+    sdk_patch.assert_called_once()
+    metrics_patch.assert_called_once()
+    api_patch.assert_called_once()
+
+    # There should be one executor call from metrics, none from shadow traffic.
+    assert client.executor.calls == 1  # type: ignore
+
+    dreq: DeliveryRequest = api_patch.call_args[0][0]
+    assert dreq.request.client_info is not None
+    assert dreq.request.client_info.traffic_type == TrafficType.SHADOW
 
 
 def create_default_client(shadow_traffic_rate: float) -> PromotedDeliveryClient:

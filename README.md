@@ -38,6 +38,7 @@ client = PromotedDeliveryClient(delivery_endpoint=delivery_endpoint,
 | `apply_treatment_checker`      | func[[CohortMembership], bool] | Optional function called during delivery, accepts an experiment and returns a boolean indicating whether the request should be considered part of the control group (False) or in the treatment arm of an experiment (True). If not set, the default behavior of checking the experiement `arm` is applied. |
 | `max_request_insertions`       | int                            | Maximum number of request insertions that will be passed to (and returned from) Delivery API. Defaults to 1000.                                                                                                                                                                                             |
 | `shadow_traffic_delivery_rate` | float between 0 and 1          | rate = [0,1] of traffic that gets directed to Delivery API as "shadow traffic". Only applies to cases where Delivery API is not called. Defaults to 0 (no shadow traffic).                                                                                                                                  |
+| `blocking_shadow_traffic`      | bool                           | Option to make shadow traffic a blocking (as opposed to background) call to delivery API, defaults to False.                                                                                                                                                                                                |
 
 ## Data Types
 

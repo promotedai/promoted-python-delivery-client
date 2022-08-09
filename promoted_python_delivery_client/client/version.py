@@ -1,1 +1,1 @@
-SERVER_VERSION = "python.0.1.0"
+SERVER_VERSION = "python.0.2.0"

@@ -15,35 +15,35 @@ def test_create_success():
 def test_create_invalid_cohort_id():
     with pytest.raises(ValueError) as ex:
         TwoArmExperiment("", 10, 50, 10, 50)
-        assert str(ex) == "Cohort ID must be non-empty"
+    assert "Cohort ID must be non-empty" in str(ex)
 
 
 def test_create_invalid_bucket_active_counts():
     with pytest.raises(ValueError) as ex:
         TwoArmExperiment("a", -1, 50, 10, 50)
-        assert str(ex) == "Active control buckets must be between 0 and the total number of control buckets"
+    assert "Active control buckets must be between 0 and the total number of control buckets" in str(ex)
 
     with pytest.raises(ValueError) as ex:
         TwoArmExperiment("a", 51, 50, 10, 50)
-        assert str(ex) == "Active control buckets must be between 0 and the total number of control buckets"
+    assert "Active control buckets must be between 0 and the total number of control buckets" in str(ex)
 
     with pytest.raises(ValueError) as ex:
         TwoArmExperiment("a", 10, 50, -1, 50)
-        assert str(ex) == "Active treatment buckets must be between 0 and the total number of treatment buckets"
+    assert "Active treatment buckets must be between 0 and the total number of treatment buckets" in str(ex)
 
     with pytest.raises(ValueError) as ex:
         TwoArmExperiment("a", 10, 50, 51, 50)
-        assert str(ex) == "Active treatment buckets must be between 0 and the total number of treatment buckets"
+    assert "Active treatment buckets must be between 0 and the total number of treatment buckets" in str(ex)
 
 
 def test_create_invalid_bucket_counts():
     with pytest.raises(ValueError) as ex:
         TwoArmExperiment("a", 0, -1, 10, 50)
-        assert str(ex) == "Control buckets must be positive"
+    assert "Control buckets must be positive" in str(ex)
 
     with pytest.raises(ValueError) as ex:
         TwoArmExperiment("a", 10, 50, 0, -1)
-        assert str(ex) == "Treatment buckets must be positive"
+    assert "Treatment buckets must be positive" in str(ex)
 
 
 def test_create_two_arm_experiment_1_percent_success():
@@ -89,16 +89,16 @@ def test_user_in_treatment():
 def test_create_50_50_invalid_percents():
     with pytest.raises(ValueError) as ex:
         create_50_50_two_arm_experiment_config("HOLD_OUT", -1, 50)
-        assert str(ex) == "Control percent must be in the range [0, 50]"
+    assert "Control percent must be in the range [0, 50]" in str(ex)
 
     with pytest.raises(ValueError) as ex:
         create_50_50_two_arm_experiment_config("HOLD_OUT", 51, 50)
-        assert str(ex) == "Control percent must be in the range [0, 50]"
+    assert "Control percent must be in the range [0, 50]" in str(ex)
 
     with pytest.raises(ValueError) as ex:
         create_50_50_two_arm_experiment_config("HOLD_OUT", 50, -1)
-        assert str(ex) == "Treatment percent must be in the range [0, 50]"
+    assert "Treatment percent must be in the range [0, 50]" in str(ex)
 
     with pytest.raises(ValueError) as ex:
         create_50_50_two_arm_experiment_config("HOLD_OUT", 50, 51)
-        assert str(ex) == "Treatment percent must be in the range [0, 50]"
+    assert "Treatment percent must be in the range [0, 50]" in str(ex)

@@ -1,19 +1,25 @@
 import pytest
 from promoted_python_delivery_client.client.delivery_request import DeliveryRequest
-from promoted_python_delivery_client.client.insertion_page_type import InsertionPageType
 from promoted_python_delivery_client.client.sdk_delivery import SDKDelivery
 from promoted_python_delivery_client.model.paging import Paging
 from promoted_python_delivery_client.model.request import Request
 from tests.utils_testing import create_test_request_insertions
 
 
-def test_invalid_paging_offset():
+def test_invalid_paging_offset_and_insertion_start():
     req = Request(insertion=create_test_request_insertions(10),
-                  paging=Paging(size=10, offset=10))
-    dreq = DeliveryRequest(req)
+                  paging=Paging(size=10, offset=5))
+    dreq = DeliveryRequest(req, insertion_start=100)
     with pytest.raises(ValueError) as ex:
         SDKDelivery().run_delivery(dreq)
-        assert str(ex) == "Invalid paging"
+    assert "offset should be >= insertion start" in str(ex)
+
+
+def test_valid_paging_offset_and_insertion_start():
+    req = Request(insertion=create_test_request_insertions(10),
+                  paging=Paging(size=10, offset=5))
+    dreq = DeliveryRequest(req, insertion_start=5)
+    SDKDelivery().run_delivery(dreq)
 
 
 def test_no_paging_returns_all():
@@ -80,14 +86,46 @@ def test_paging_size_more_than_insertions():
         assert resp.insertion[i].insertion_id
 
 
-def test_pre_paged():
-    req = Request(insertion=create_test_request_insertions(10),
-                  paging=Paging(size=0, offset=5))
-    dreq = DeliveryRequest(req, insertion_page_type=InsertionPageType.PREPAGED)
+def test_insertion_start_set_to_offset():
+    insertion_start = 5
+    req = Request(insertion=create_test_request_insertions(3),
+                  paging=Paging(size=2, offset=5))
+    dreq = DeliveryRequest(req, insertion_start=insertion_start)
     resp = SDKDelivery().run_delivery(dreq)
     assert req.request_id is not None
     assert len(req.request_id) > 0
-    assert len(resp.insertion) == 10
-    for i in range(0, 10):
-        assert resp.insertion[i].position == i+5
-        assert resp.insertion[i].insertion_id
+    assert len(resp.insertion) == 2
+
+    # Returns positions 0 and 1 since we want an offset identical to the request insertion start.
+    for idx, ins in enumerate(resp.insertion):
+        assert ins.position == insertion_start + idx
+        assert ins.content_id == str(idx)
+
+
+def test_insertion_start_less_than_offset():
+    insertion_start = 5
+    offset_diff = 1
+    req = Request(insertion=create_test_request_insertions(3),
+                  paging=Paging(size=2, offset=6))
+    dreq = DeliveryRequest(req, insertion_start=insertion_start)
+    resp = SDKDelivery().run_delivery(dreq)
+    assert req.request_id is not None
+    assert len(req.request_id) > 0
+    assert len(resp.insertion) == 2
+
+    # Returns positions 1 and 2 since we want an offset one past the request insertion start.
+    for idx, ins in enumerate(resp.insertion):
+        assert ins.position == insertion_start + offset_diff + idx
+        assert ins.content_id == str(idx+offset_diff)
+
+
+def test_insertion_start_with_offset_outside_size():
+    insertion_start = 5
+    req = Request(insertion=create_test_request_insertions(3),
+                  paging=Paging(size=2, offset=8))
+    dreq = DeliveryRequest(req, insertion_start=insertion_start)
+    resp = SDKDelivery().run_delivery(dreq)
+    assert req.request_id is not None
+    assert len(req.request_id) > 0
+    # Returns empty
+    assert len(resp.insertion) == 0

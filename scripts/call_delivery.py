@@ -5,6 +5,7 @@ import sys
 from promoted_python_delivery_client.client.client import PromotedDeliveryClient
 from promoted_python_delivery_client.client.delivery_request import DeliveryRequest
 from promoted_python_delivery_client.model.insertion import Insertion
+from promoted_python_delivery_client.model.properties import Properties
 from promoted_python_delivery_client.model.request import Request
 from promoted_python_delivery_client.model.user_info import UserInfo
 from dotenv import load_dotenv
@@ -27,10 +28,10 @@ client = PromotedDeliveryClient(delivery_endpoint=delivery_endpoint,
                                 only_send_metrics_request_to_logger=True)
 
 insertion = [
-  Insertion(content_id="28835"),
-  Insertion(content_id="57076"),
-  Insertion(content_id="37796"),
-  Insertion(content_id="52502"),
+  Insertion(content_id="28835", properties=Properties(struct={"price": 1.23})),
+  Insertion(content_id="57076", properties=Properties(struct={"price": "4.56"})),
+  Insertion(content_id="37796", properties=Properties(struct={"price": 0})),
+  Insertion(content_id="52502", properties=Properties(struct={"price": None})),
   Insertion(content_id="49815"),
   Insertion(content_id="26926"),
   Insertion(content_id="51127"),

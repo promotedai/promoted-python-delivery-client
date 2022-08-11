@@ -2,7 +2,6 @@
 from typing import List, Optional
 
 from promoted_python_delivery_client.client.delivery_request import DeliveryRequest
-from promoted_python_delivery_client.client.insertion_page_type import InsertionPageType
 from promoted_python_delivery_client.model.cohort_membership import CohortMembership
 from promoted_python_delivery_client.model.request import Request
 
@@ -18,12 +17,9 @@ class DeliveryRequestValidator():
         # Check the ids.
         validation_errors.extend(self.validate_ids(request.request, request.experiment))
 
-        # Full delivery requires unpaged insertions.
-        if request.insertion_page_type == InsertionPageType.PREPAGED:
-            if not request.only_log:
-                validation_errors.append("Delivery expects unpaged insertions")
-            elif is_shadow_traffic:
-                validation_errors.append("Insertions must be unpaged when shadow traffic is on")
+        # Insertion start should be >= 0
+        if request.insertion_start < 0:
+            validation_errors.append("Insertion start must be greater or equal to 0")
 
         return validation_errors
 

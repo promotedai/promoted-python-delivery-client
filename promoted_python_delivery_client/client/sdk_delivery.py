@@ -1,7 +1,6 @@
 from typing import List
 import uuid
 from promoted_python_delivery_client.client.delivery_request import DeliveryRequest
-from promoted_python_delivery_client.client.insertion_page_type import InsertionPageType
 from promoted_python_delivery_client.model.insertion import Insertion
 from promoted_python_delivery_client.model.paging import Paging
 from promoted_python_delivery_client.model.response import Response
@@ -14,16 +13,17 @@ class SDKDelivery:
     def run_delivery(self, request: DeliveryRequest) -> Response:
         req = request.request
         paging = req.paging
-        if paging is not None and paging.offset is not None and paging.offset >= len(req.insertion):
-            raise ValueError("invalid paging (offset >= size)")
 
         # Set a request id.
         req.request_id = str(uuid.uuid4())
         if paging is None:
             paging = Paging(offset=0, size=len(req.insertion))
 
+        # Adjust size and offset.
         offset = max(0, paging.offset) if paging.offset is not None else 0
-        index = offset if request.insertion_page_type != InsertionPageType.PREPAGED else 0
+        if offset < request.insertion_start:
+            raise ValueError("offset should be >= insertion start (specifically, the global position)")
+        index = offset - request.insertion_start
         size = paging.size if paging.size is not None else 0
         if size <= 0:
             size = len(req.insertion)

@@ -7,4 +7,3 @@ from typing import Dict
 @dataclass
 class Properties:
     struct: Dict[str, object]
-

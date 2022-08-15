@@ -26,6 +26,14 @@ def test_delivery_request_to_json_3():
         print(payload)
 
 
+def test_delivery_request_to_json_3_allows_null_properties():
+    req = Request(insertion=[Insertion(content_id="a", properties=Properties({"xyz": None, "abc": "zzz"}))])
+    payload = delivery_request_to_json_3(req)
+    assert "abc" in payload
+    assert "zzz" in payload
+    assert "xyz" in payload
+
+
 def test_delivery_request_to_json_has_no_nulls():
     req = _build_request()
     payload = delivery_request_to_json_3(req)

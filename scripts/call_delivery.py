@@ -8,6 +8,7 @@ from promoted_python_delivery_client.model.insertion import Insertion
 from promoted_python_delivery_client.model.properties import Properties
 from promoted_python_delivery_client.model.request import Request
 from promoted_python_delivery_client.model.user_info import UserInfo
+from promoted_python_delivery_client.client.serde import delivery_request_to_json_3
 from dotenv import load_dotenv
 
 path = dirname(abspath(__file__)) + '/.env'
@@ -39,7 +40,7 @@ insertion = [
 ]
 req = Request(insertion=insertion, user_info=UserInfo(log_user_id="abc"))
 request = DeliveryRequest(request=req)
-print(f"DELIVERY REQUEST: {request.request.to_json()}")  # type: ignore
+print(f"DELIVERY REQUEST: {delivery_request_to_json_3(request.request)}")  # type: ignore
 
 print()
 

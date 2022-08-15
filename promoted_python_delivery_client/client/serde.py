@@ -49,12 +49,12 @@ def delivery_reponse_from_json_2(payload: bytes) -> Response:
     return Response.from_dict(kvs)  # type: ignore this is from dataclass_json
 
 
-def _clean_empty(d):
+def _clean_empty(d, inside_props_struct=False):
     if isinstance(d, dict):
         return {
             k: v
-            for k, v in ((k, _clean_empty(v)) for k, v in d.items())
-            if v
+            for k, v in ((k, _clean_empty(v, inside_props_struct=(inside_props_struct or k == "struct"))) for k, v in d.items())
+            if (v is not None) or inside_props_struct
         }
     if isinstance(d, list):
         return [v for v in map(_clean_empty, d) if v]

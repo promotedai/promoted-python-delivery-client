@@ -2,6 +2,7 @@ import logging
 import requests
 from promoted_python_delivery_client.client.delivery_request import DeliveryRequest
 from promoted_python_delivery_client.client.delivery_request_state import DeliveryRequestState
+from .serde import delivery_request_to_json_3, delivery_reponse_from_json_2
 from promoted_python_delivery_client.model.response import Response
 
 
@@ -23,7 +24,7 @@ class APIDelivery:
         state = DeliveryRequestState(delivery_request)
 
         request = state.get_request_to_send(self.max_request_insertions)
-        payload = request.to_json()  # type: ignore this is from dataclass_json
+        payload = delivery_request_to_json_3(request)
         r = requests.post(url=self.endpoint,
                           data=payload,
                           timeout=self.timeout_in_seconds,
@@ -31,7 +32,7 @@ class APIDelivery:
         if r.status_code != 200:
             logging.error(f"Error calling delivery API {r.status_code}")
             raise requests.HTTPError("error calling delivery API")
-        return state.get_response_to_return(Response.from_json(r.content))  # type: ignore this is from dataclass_json
+        return state.get_response_to_return(delivery_reponse_from_json_2(r.content))
 
     def _run_warmup(self):
         warmup_endpoint = self.endpoint.replace("/deliver", "/healthz")

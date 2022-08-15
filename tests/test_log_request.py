@@ -6,6 +6,7 @@ from promoted_python_delivery_client.model.execution_server import ExecutionServ
 from promoted_python_delivery_client.model.log_request import LogRequest
 from promoted_python_delivery_client.model.request import Request
 from promoted_python_delivery_client.model.response import Response
+from promoted_python_delivery_client.client.serde import log_request_to_json_3
 
 
 def test_to_json():
@@ -13,7 +14,7 @@ def test_to_json():
     dl = DeliveryLog(Request(insertion=[]), Response(insertion=[]), exec)
     log_req = LogRequest(delivery_log=[dl])
 
-    data_str = log_req.to_json()  # type: ignore
+    data_str = log_request_to_json_3(log_req)
     data = json.loads(data_str)
 
     # ExecutionServer should be the number, not the name.

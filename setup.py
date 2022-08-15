@@ -36,8 +36,8 @@ setup(
     ],
     packages=["promoted_python_delivery_client", "promoted_python_delivery_client.client", "promoted_python_delivery_client.model"],
     include_package_data=True,
-    install_requires=["dataclasses_json", "requests"],
+    install_requires=["dataclasses_json", "requests", "ujson"],
     setup_requires=["pytest-runner", "pytest-mock"],
-    tests_require=["pytest"],
+    tests_require=["pytest", "nose", "nose-timer"],
     test_suite="tests",
 )

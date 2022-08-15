@@ -24,6 +24,8 @@ from promoted_python_delivery_client.model.response import Response
 from promoted_python_delivery_client.model.timing import Timing
 from promoted_python_delivery_client.model.traffic_type import TrafficType
 from promoted_python_delivery_client.client.version import SERVER_VERSION
+from promoted_python_delivery_client.client.serde import log_request_to_json_3
+
 
 # Executor to run metrics logging in the background.
 DEFAULT_THREAD_POOL_SIZE = 5
@@ -122,7 +124,7 @@ class PromotedDeliveryClient:
                         exec_svr: ExecutionServer) -> None:
         log_request = self._create_log_request(delivery_request, response, cohort_membership, exec_svr)
         if self.only_send_metrics_request_to_logger:
-            logging.info(f"LOG REQUEST: {log_request.to_json()}")  # type: ignore
+            logging.info(f"LOG REQUEST: {log_request_to_json_3(log_request)}")
         else:
             try:
                 self.api_metrics.run_metrics_logging(log_request)

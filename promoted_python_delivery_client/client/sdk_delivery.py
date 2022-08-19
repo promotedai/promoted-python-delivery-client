@@ -31,9 +31,12 @@ class SDKDelivery:
         final_insertion_size = min(size, len(req.insertion) - index)
         insertion_page: List[Insertion] = []
         for i in range(0, final_insertion_size):
-            ins = req.insertion[index]
-            self._prepare_response_insertion(ins, offset)
-            insertion_page.append(ins)
+            req_ins = req.insertion[index]
+
+            # Delivery response insertions only contain content_id + the fields added in _prepare_response_insertion
+            resp_ins = Insertion(content_id=req_ins.content_id)
+            self._prepare_response_insertion(resp_ins, offset)
+            insertion_page.append(resp_ins)
             index = index + 1
             offset = offset + 1
 

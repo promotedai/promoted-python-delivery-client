@@ -1,7 +1,9 @@
 import pytest
 from promoted_python_delivery_client.client.delivery_request import DeliveryRequest
 from promoted_python_delivery_client.client.sdk_delivery import SDKDelivery
+from promoted_python_delivery_client.model.insertion import Insertion
 from promoted_python_delivery_client.model.paging import Paging
+from promoted_python_delivery_client.model.properties import Properties
 from promoted_python_delivery_client.model.request import Request
 from tests.utils_testing import create_test_request_insertions
 
@@ -20,6 +22,28 @@ def test_valid_paging_offset_and_insertion_start():
                   paging=Paging(size=10, offset=5))
     dreq = DeliveryRequest(req, insertion_start=5)
     SDKDelivery().run_delivery(dreq)
+
+
+def test_response_insertions_only_have_key_fields():
+    insertions = create_test_request_insertions(1)
+    req_ins = insertions[0]
+    req_ins.properties = Properties({"a": True})
+    req_ins.retrieval_rank = 3
+    req_ins.retrieval_score = 2.2
+
+    req = Request(insertion=insertions)
+    dreq = DeliveryRequest(req)
+    resp = SDKDelivery().run_delivery(dreq)
+
+    resp_ins = resp.insertion[0]
+    assert resp_ins.content_id == req_ins.content_id
+    assert resp_ins.properties is None
+    assert resp_ins.retrieval_rank is None
+    assert resp_ins.retrieval_score is None
+
+    assert req_ins.properties is not None
+    assert req_ins.retrieval_rank is not None
+    assert req_ins.retrieval_score is not None
 
 
 def test_no_paging_returns_all():

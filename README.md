@@ -382,6 +382,7 @@ Here's an example using custom arm assignment logic (not using `twoArmExperiment
 - Create a development branch
 - `bump2version [major|minor|patch]`
 - Send a pull request and merge.
+- Clean out the `dist/` directory and build the wheel.
 - `python3 -m twine upload dist/*`
   - [PyPi](https://pypi.org/project/promoted-python-delivery-client/)
   - FUTURE: Do this with a Github Action.

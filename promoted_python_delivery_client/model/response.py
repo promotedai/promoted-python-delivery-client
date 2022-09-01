@@ -11,3 +11,4 @@ from promoted_python_delivery_client.model.paging_info import PagingInfo
 class Response:
     insertion: List[Insertion]
     paging_info: Optional[PagingInfo] = None
+    introspection_data: Optional[str] = None

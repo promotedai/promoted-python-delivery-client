@@ -162,12 +162,15 @@ class PromotedDeliveryClient:
         return log_request
 
     def _deliver_shadow_traffic(self, delivery_request: DeliveryRequest) -> None:
-        # We need a clone of the request so that we can safely modify the ClientInfo for shadow traffic.
-        request_to_send = copy.deepcopy(delivery_request)
+        # We need a copy of the inner request so that we can modify the ClientInfo for shadow traffic.
+        request_to_send = copy.copy(delivery_request)
+        inner_request_to_send = copy.copy(request_to_send.request)
+        request_to_send.request = inner_request_to_send
 
         # We ensured earlier that ClientInfo was filled in.
         assert request_to_send.request.client_info is not None
 
+        request_to_send.request.client_info = copy.deepcopy(request_to_send.request.client_info)
         request_to_send.request.client_info.client_type = ClientType.SERVER
         request_to_send.request.client_info.traffic_type = TrafficType.SHADOW
 

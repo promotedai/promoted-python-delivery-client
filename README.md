@@ -379,7 +379,7 @@ Here's an example using custom arm assignment logic (not using `twoArmExperiment
 
 ### Release
 
-- Create a development branch
+- Create a development branch.
 - `bump2version [major|minor|patch]`
 - Send a pull request and merge.
 - Clean out the `dist/` directory and build the wheel.

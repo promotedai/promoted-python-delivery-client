@@ -47,7 +47,7 @@ class DeliveryRequestValidator():
             validation_errors.append(
                 "Request.insertionMatrixHeaders and Request.insertionMatrix should be used together")
         elif has_matrix_headers:
-            if request.insertion is not None and len(request.insertion) > 0:
+            if request.insertion and len(request.insertion) > 0:
                 validation_errors.append(
                     "Request.insertion will be ignored because Request.insertionMatrix is present")
             # Validate headers.

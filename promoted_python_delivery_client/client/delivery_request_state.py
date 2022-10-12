@@ -14,6 +14,8 @@ class DeliveryRequestState:
 
     def get_request_to_send(self, max_request_insertions: int) -> Request:
         req = self.delivery_request.request
-        if len(req.insertion) > max_request_insertions:
+        if req.insertion and len(req.insertion) > max_request_insertions:
             req.insertion = req.insertion[0:max_request_insertions]
+        if req.insertion_matrix and len(req.insertion_matrix) > max_request_insertions:
+            req.insertion_matrix = req.insertion_matrix[0:max_request_insertions]
         return req

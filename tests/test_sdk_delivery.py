@@ -46,6 +46,14 @@ def test_response_insertions_only_have_key_fields():
     assert req_ins.retrieval_score is not None
 
 
+def test_response_has_request_id():
+    req = Request(insertion=create_test_request_insertions(1))
+    dreq = DeliveryRequest(req)
+    resp = SDKDelivery().run_delivery(dreq)
+
+    assert resp.request_id is not None
+
+
 def test_no_paging_returns_all():
     req = Request(insertion=create_test_request_insertions(10))
     dreq = DeliveryRequest(req)

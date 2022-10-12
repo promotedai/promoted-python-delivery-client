@@ -40,7 +40,7 @@ class SDKDelivery:
             index = index + 1
             offset = offset + 1
 
-        return Response(insertion=insertion_page)
+        return Response(insertion=insertion_page, request_id=req.request_id)
 
     def _prepare_response_insertion(self, ins: Insertion, position: int) -> None:
         ins.position = position

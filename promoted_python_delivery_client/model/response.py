@@ -12,3 +12,4 @@ class Response:
     insertion: List[Insertion]
     paging_info: Optional[PagingInfo] = None
     introspection_data: Optional[str] = None
+    request_id: Optional[str] = None

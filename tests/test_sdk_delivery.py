@@ -153,3 +153,12 @@ def test_insertion_start_with_offset_outside_size():
     assert len(req.request_id) > 0
     # Returns empty
     assert len(resp.insertion) == 0
+
+
+def test_response_insertions_only_have_key_fields2():
+    req = Request(insertion_matrix_headers=["somethingElse", "contentId"], insertion_matrix=[["a", "b"], ["c", "d"]])
+    dreq = DeliveryRequest(req)
+    resp = SDKDelivery().run_delivery(dreq)
+
+    assert resp.insertion[0].content_id == "b"
+    assert resp.insertion[1].content_id == "d"

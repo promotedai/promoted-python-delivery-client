@@ -95,3 +95,48 @@ def test_validate_captures_multiple_errors():
     assert len(errors) == 2
     assert errors[0] == "Request.requestId should not be set"
     assert errors[1] == "Request.userInfo.logUserId should be set"
+
+
+def test_validate_with_only_matrix_headers():
+    req = DeliveryRequest(
+        Request(insertion_matrix_headers=["contentId"], user_info=UserInfo(log_user_id="a")),
+        only_log=False)
+    errors = DeliveryRequestValidator().validate(req, False)
+    assert len(errors) == 1
+    assert errors[0] == "Request.insertionMatrixHeaders and Request.insertionMatrix should be used together"
+
+
+def test_validate_with_plain_and_matrix_insertions():
+    req = DeliveryRequest(
+        Request(insertion_matrix_headers=["contentId"], insertion_matrix=[["b"]],
+                insertion=[Insertion(content_id="a")], user_info=UserInfo(log_user_id="a")),
+        only_log=False)
+    errors = DeliveryRequestValidator().validate(req, False)
+    assert len(errors) == 1
+    assert errors[0] == "Request.insertion will be ignored because Request.insertionMatrix is present"
+
+
+def test_validate_with_invalid_matrix_header():
+    req = DeliveryRequest(
+        Request(insertion_matrix_headers=["insertionId", "contentId"], insertion_matrix=[["b", "c"]], user_info=UserInfo(log_user_id="a")),
+        only_log=False)
+    errors = DeliveryRequestValidator().validate(req, False)
+    assert len(errors) == 1
+    assert errors[0] == "Request.insertionMatrixHeaders should not specify insertionId"
+
+
+def test_validate_with_invalid_matrix_header():
+    req = DeliveryRequest(
+        Request(insertion_matrix_headers=["d"], insertion_matrix=[["b"]], user_info=UserInfo(log_user_id="a")),
+        only_log=False)
+    errors = DeliveryRequestValidator().validate(req, False)
+    assert len(errors) == 1
+    assert errors[0] == "Request.insertionMatrixHeaders should specify contentId"
+
+
+def test_validate_with_valid_matrix():
+    req = DeliveryRequest(
+        Request(insertion_matrix_headers=["contentId"], insertion_matrix=[["b"]], user_info=UserInfo(log_user_id="a")),
+        only_log=False)
+    errors = DeliveryRequestValidator().validate(req, False)
+    assert len(errors) == 0

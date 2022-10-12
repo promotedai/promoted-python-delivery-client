@@ -15,7 +15,9 @@ class DeliveryRequestValidator():
             return ["Request must be set"]
 
         # Check the ids.
-        validation_errors.extend(self.validate_ids(request.request, request.experiment))
+        validation_errors.extend(self.validate_ids(request.request))
+
+        validation_errors.extend(self.validate_insertions(request.request))
 
         # Insertion start should be >= 0
         if request.insertion_start < 0:
@@ -23,7 +25,7 @@ class DeliveryRequestValidator():
 
         return validation_errors
 
-    def validate_ids(self, request: Request, experiment: Optional[CohortMembership]) -> List[str]:
+    def validate_ids(self, request: Request) -> List[str]:
         validation_errors: List[str] = []
 
         if request.request_id:
@@ -34,13 +36,42 @@ class DeliveryRequestValidator():
         elif not request.user_info.log_user_id:
             validation_errors.append("Request.userInfo.logUserId should be set")
 
-        if request.insertion is None:
-            validation_errors.append("Request.insertion should be set")
+        return validation_errors
+
+    def validate_insertions(self, request: Request) -> List[str]:
+        validation_errors: List[str] = []
+
+        has_matrix_headers = request.insertion_matrix_headers is not None
+        has_matrix = request.insertion_matrix is not None
+        if has_matrix_headers != has_matrix:
+            validation_errors.append(
+                "Request.insertionMatrixHeaders and Request.insertionMatrix should be used together")
+        elif has_matrix_headers:
+            if request.insertion is not None and len(request.insertion) > 0:
+                validation_errors.append(
+                    "Request.insertion will be ignored because Request.insertionMatrix is present")
+            # Validate headers.
+            content_id_set = False
+            for header in request.insertion_matrix_headers:
+                if header == "insertionId":
+                    validation_errors.append("Request.insertionMatrixHeaders should not specify insertionId")
+                elif header == "contentId":
+                    content_id_set = True
+            if not content_id_set:
+                validation_errors.append("Request.insertionMatrixHeaders should specify contentId")
+            # Validate matrix.
+            for insertion in request.insertion_matrix:
+                if len(insertion) != len(request.insertion_matrix_headers):
+                    validation_errors.append(
+                        "Request.insertionMatrix elements should be equal length to Request.insertionMatrixHeaders")
         else:
-            for ins in request.insertion:
-                if ins.insertion_id:
-                    validation_errors.append("Insertion.insertionId should not be set")
-                if not ins.content_id:
-                    validation_errors.append("Insertion.contentId should be set")
+            if request.insertion is None:
+                validation_errors.append("Request.insertion should be set")
+            else:
+                for ins in request.insertion:
+                    if ins.insertion_id:
+                        validation_errors.append("Insertion.insertionId should not be set")
+                    if not ins.content_id:
+                        validation_errors.append("Insertion.contentId should be set")
 
         return validation_errors

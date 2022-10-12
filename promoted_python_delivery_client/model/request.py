@@ -14,7 +14,9 @@ from promoted_python_delivery_client.model.user_info import UserInfo
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
 class Request:
-    insertion: List[Insertion]
+    insertion: List[Insertion] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
+    insertion_matrix_headers: List[str] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
+    insertion_matrix: List[List[object]] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
     user_info: Optional[UserInfo] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
     client_request_id: Optional[str] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
     request_id: Optional[str] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore

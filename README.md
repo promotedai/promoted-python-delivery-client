@@ -7,7 +7,7 @@ Python client SDK for the Promoted.ai Delivery API
 - Demonstrates and implements the recommended practices and data types for calling Promoted.ai's Delivery API.
 - Client-side position assignment and paging when not using results from Delivery API, for example when logging only or as part of an experiment control.
 
-## Creating a PromotedDelieryClient
+## Creating a PromotedDeliveryClient
 
 We recommend creating a `PromotedDeliveryClient` in a separate file so it can be reused.
 It is thread-safe and intended to be used as a singleton, leveraging the well-known Python `requests` library for calling Promoted.ai's services.

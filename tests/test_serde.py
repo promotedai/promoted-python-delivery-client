@@ -57,3 +57,18 @@ def _build_request() -> Request:
     for num in range(96):
         insertion.append(Insertion(content_id=str(num).rjust(5, '0')))
     return Request(insertion=insertion, user_info=UserInfo(log_user_id="abc"))
+
+
+def test_delivery_request_with_insertion_matrix_to_json():
+    req = Request(insertion_matrix_headers=["abc", "d.e.f"], insertion_matrix=[["12", 34],
+                                                                               ["56", 78]])
+    payload = delivery_request_to_json_3(req)
+
+    assert "abc" in payload
+    assert "d.e.f" in payload
+    assert "12" in payload
+    assert "34" in payload
+    assert "56" in payload
+    assert "78" in payload
+
+    assert "null" not in payload

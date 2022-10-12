@@ -39,6 +39,7 @@ client = PromotedDeliveryClient(delivery_endpoint=delivery_endpoint,
 | `max_request_insertions`       | int                            | Maximum number of request insertions that will be passed to (and returned from) Delivery API. Defaults to 1000.                                                                                                                                                                                             |
 | `shadow_traffic_delivery_rate` | float between 0 and 1          | rate = [0,1] of traffic that gets directed to Delivery API as "shadow traffic". Only applies to cases where Delivery API is not called. Defaults to 0 (no shadow traffic).                                                                                                                                  |
 | `blocking_shadow_traffic`      | bool                           | Option to make shadow traffic a blocking (as opposed to background) call to delivery API, defaults to False.                                                                                                                                                                                                |
+| `perform_checks` | bool | Performs some validation that request fields are filled properly. These checks take time so this should be turned off once a request is satisfactory. |
 
 ## Data Types
 
@@ -91,6 +92,40 @@ Field Name | Type | Optional? | Description
 `retrieval_rank` | int | Yes | Optional original ranking of this content item.
 `retrieval_score` | float | Yes | Optional original quality score of this content item.
 `properties` | Properties | Yes | Any additional custom properties to associate. For v1 integrations, it is fine not to fill in all the properties.
+
+Insertions can be specified in a more compact manner using the request-level  `insertion_matrix_headers` and `insertion_matrix` fields. This can improve latency when there are many insertions or many properties.
+
+For example, instead of defining a request like so:
+
+```python
+insertion = [
+  Insertion(content_id="28835", properties=Properties(struct={"price": 1.23})),
+  Insertion(content_id="37796", properties=Properties(struct={"price": 0})),
+  Insertion(content_id="49815"),
+]
+req = Request(insertion=insertion, ...)
+```
+
+It could be defined as:
+
+```python
+insertion_matrix_headers = ["contentId", "price"]
+insertion_matrix = [
+  ["28835", 1.23],
+  ["37796", 0],
+  ["49815", None],
+]
+req = Request(insertion_matrix_headers=insertion_matrix_headers,
+              insertion_matrix=insertion_matrix,
+              ...
+)
+```
+
+Things to note:
+* Properties with nested `struct`s should concatenate paths with a `.` (period).
+* Properties which don't exist for an insertion must be specified as `None`.
+
+The `perform_checks` client parameter can help ensure correct usage.
 
 ---
 

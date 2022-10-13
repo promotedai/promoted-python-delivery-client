@@ -1,3 +1,4 @@
+import itertools
 import ujson
 from promoted_python_delivery_client.model.request import Request
 from promoted_python_delivery_client.model.response import Response
@@ -49,13 +50,16 @@ def delivery_reponse_from_json_2(payload: bytes) -> Response:
     return Response.from_dict(kvs)  # type: ignore this is from dataclass_json
 
 
-def _clean_empty(d, inside_props_struct=False):
+def _clean_empty(d, keep_empty=False):
     if isinstance(d, dict):
         return {
             k: v
-            for k, v in ((k, _clean_empty(v, inside_props_struct=(inside_props_struct or k == "struct"))) for k, v in d.items())
-            if (v is not None) or inside_props_struct
+            for k, v in ((k, _clean_empty(v, keep_empty=(keep_empty or k == "struct" or k == "insertionMatrix"))) for k, v in d.items())
+            if v or keep_empty
         }
     if isinstance(d, list):
-        return [v for v in map(_clean_empty, d) if v]
+        return [
+            v
+            for v in map(_clean_empty, d, itertools.repeat(keep_empty, len(d)))
+            if v or keep_empty]
     return d

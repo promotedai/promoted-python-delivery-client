@@ -72,3 +72,9 @@ def test_delivery_request_with_insertion_matrix_to_json():
     assert "78" in payload
 
     assert "null" not in payload
+
+def test_delivery_request_with_insertion_matrix_to_json_keeps_empty():
+    req = Request(insertion_matrix_headers=["a"], insertion_matrix=[[None]])
+    payload = delivery_request_to_json_3(req)
+
+    assert "[[null]]" in payload

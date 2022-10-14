@@ -393,7 +393,7 @@ Here's an example using custom arm assignment logic (not using `twoArmExperiment
 
 - Start venv: `source venv/bin/activate`
 - Build wheel: `python setup.py bdist_wheel`
-- Install locally: `pip install dist/promoted_python_delivery_client-1.1.1-py3-none-any.whl --force-reinstall`
+- Install locally: `pip install dist/promoted_python_delivery_client-1.2.0-py3-none-any.whl --force-reinstall`
 - Try it out:
   - See the `scripts/` directory.
   - Create a `.env` file with a few variables:

@@ -3,6 +3,7 @@ from dataclasses_json import config, dataclass_json, LetterCase
 from typing import List, Optional
 from promoted_python_delivery_client.model.blender_config import BlenderConfig
 from promoted_python_delivery_client.model.client_info import ClientInfo
+from promoted_python_delivery_client.model.device import Device
 from promoted_python_delivery_client.model.insertion import Insertion
 from promoted_python_delivery_client.model.paging import Paging
 from promoted_python_delivery_client.model.properties import Properties
@@ -21,6 +22,7 @@ class Request:
     client_request_id: Optional[str] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
     request_id: Optional[str] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
     client_info: Optional[ClientInfo] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
+    device: Optional[Device] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
     search_query: Optional[str] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
     use_case: Optional[UseCase] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
     auto_view_id: Optional[str] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore

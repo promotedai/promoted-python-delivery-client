@@ -4,6 +4,8 @@ from os.path import dirname, abspath
 import sys
 from promoted_python_delivery_client.client.client import PromotedDeliveryClient
 from promoted_python_delivery_client.client.delivery_request import DeliveryRequest
+from promoted_python_delivery_client.model.browser import Browser
+from promoted_python_delivery_client.model.device import Device
 from promoted_python_delivery_client.model.insertion import Insertion
 from promoted_python_delivery_client.model.properties import Properties
 from promoted_python_delivery_client.model.request import Request
@@ -38,11 +40,20 @@ insertion = [
   Insertion(content_id="51127"),
   Insertion(content_id="14368"),
 ]
-req = Request(insertion=insertion, user_info=UserInfo(log_user_id="abc"))
+req = Request(
+  insertion=insertion,
+  user_info=UserInfo(log_user_id="abc"),
+  device=Device(
+    browser=Browser(
+      user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
+    ),
+  ),
+)
 request = DeliveryRequest(request=req)
 print(f"DELIVERY REQUEST: {delivery_request_to_json_3(request.request)}")  # type: ignore
 
 print()
+print(f"Calling Delivery API ${delivery_endpoint}")
 
 resp = client.deliver(request)
 print(f"DELIVERY RESPONSE: {resp.response.to_json()}")  # type: ignore

@@ -391,19 +391,19 @@ Here's an example using custom arm assignment logic (not using `twoArmExperiment
 
 ### Development
 
-- Start venv: `source venv/bin/activate`
+- Start venv: `source .venv/bin/activate`.  If it doesn't exist, you need to create it. `python3 -m .venv/bin/activate`
 - Build wheel: `python setup.py bdist_wheel`
 - Install locally: `pip install dist/promoted_python_delivery_client-1.3.0-py3-none-any.whl --force-reinstall`
 - Try it out:
   - See the `scripts/` directory.
-  - Create a `.env` file with a few variables:
+  - Create a `scripts/.env` file with a few variables:
     ```sh
     DELIVERY_ENDPOINT=<GET ME FROM PROMOTED>
     DELIVERY_API_KEY=<GET ME FROM PROMOTED>
     METRICS_ENDPOINT=<GET ME FROM PROMOTED>
     METRICS_API_KEY=<GET ME FROM PROMOTED>
     ```
-  - Invoke (for example) `python3 scripts/call_delivery.sh`.
+  - Invoke (for example) `python3 scripts/call_delivery.py`.
 
 ### Testing
 

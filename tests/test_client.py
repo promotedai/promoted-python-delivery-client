@@ -68,7 +68,7 @@ def test_only_log_calls_sdk_delivery_and_logs(mocker: MockerFixture):
     req = Request(insertion=create_test_request_insertions(10))
     dreq = DeliveryRequest(request=req, only_log=True)
 
-    sdk_patch.return_value = Response(insertion=req.insertion)
+    sdk_patch.return_value = Response(request_id='reqid', insertion=req.insertion)
 
     resp = client.deliver(dreq)
     assert resp is not None
@@ -94,7 +94,7 @@ def test_custom_not_should_apply_treatment_calls_sdk_delivery_and_logs(mocker: M
     req = Request(insertion=create_test_request_insertions(10))
     dreq = DeliveryRequest(request=req, only_log=False)
 
-    sdk_patch.return_value = Response(insertion=req.insertion)
+    sdk_patch.return_value = Response(request_id='reqid', insertion=req.insertion)
 
     resp = client.deliver(dreq)
     assert resp is not None
@@ -120,7 +120,7 @@ def test_custom_should_apply_treatment_calls_api_delivery_and_does_not_log(mocke
     req = Request(insertion=create_test_request_insertions(10))
     dreq = DeliveryRequest(request=req, only_log=False)
 
-    api_patch.return_value = Response(insertion=req.insertion)
+    api_patch.return_value = Response(request_id='reqid', insertion=req.insertion)
 
     resp = client.deliver(dreq)
     assert resp is not None
@@ -145,7 +145,7 @@ def test_has_treatment_cohort_membership_calls_api_delivery_and_logs(mocker: Moc
     req = Request(insertion=create_test_request_insertions(10))
     dreq = DeliveryRequest(request=req, only_log=False, experiment=cm)
 
-    api_patch.return_value = Response(insertion=req.insertion)
+    api_patch.return_value = Response(request_id='reqid', insertion=req.insertion)
 
     resp = client.deliver(dreq)
     assert resp is not None
@@ -175,7 +175,7 @@ def test_has_control_cohort_membership_calls_sdk_delivery_and_logs(mocker: Mocke
     req = Request(insertion=create_test_request_insertions(10))
     dreq = DeliveryRequest(request=req, only_log=False, experiment=cm)
 
-    sdk_patch.return_value = Response(insertion=req.insertion)
+    sdk_patch.return_value = Response(request_id='reqid', insertion=req.insertion)
 
     resp = client.deliver(dreq)
     assert resp is not None
@@ -200,7 +200,7 @@ def test_api_delivery_error_falls_back_to_sdk_delivery(mocker: MockerFixture):
     req = Request(insertion=create_test_request_insertions(10))
     dreq = DeliveryRequest(request=req, only_log=False)
 
-    sdk_patch.return_value = Response(insertion=req.insertion)
+    sdk_patch.return_value = Response(request_id='reqid', insertion=req.insertion)
     api_patch.side_effect = Exception("oops")
 
     resp = client.deliver(dreq)

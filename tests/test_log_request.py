@@ -11,7 +11,7 @@ from promoted_python_delivery_client.client.serde import log_request_to_json_3
 
 def test_to_json():
     exec = DeliveryExecution(execution_server=ExecutionServer.API, server_version="python.1.1.1")
-    dl = DeliveryLog(Request(insertion=[]), Response(insertion=[]), exec)
+    dl = DeliveryLog(Request(insertion=[]), Response(request_id='', insertion=[]), exec)
     log_req = LogRequest(delivery_log=[dl])
 
     data_str = log_request_to_json_3(log_req)

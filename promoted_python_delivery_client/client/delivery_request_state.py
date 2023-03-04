@@ -10,7 +10,7 @@ class DeliveryRequestState:
     delivery_request: DeliveryRequest
 
     def get_response_to_return(self, resp: Response) -> Response:
-        return resp
+        return _validate_response(resp)
 
     def get_request_to_send(self, max_request_insertions: int) -> Request:
         req = self.delivery_request.request
@@ -19,3 +19,9 @@ class DeliveryRequestState:
         if req.insertion_matrix and len(req.insertion_matrix) > max_request_insertions:
             req.insertion_matrix = req.insertion_matrix[0:max_request_insertions]
         return req
+
+
+def _validate_response(response: Response) -> Response:
+    if not response.request_id:
+        raise ValueError(f"Delivery Response must have request_id; response={response}")
+    return response

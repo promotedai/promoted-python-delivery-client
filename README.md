@@ -391,7 +391,7 @@ Here's an example using custom arm assignment logic (not using `twoArmExperiment
 
 ### Development
 
-- Start venv: `source .venv/bin/activate`.  If it doesn't exist, you need to create it. `python3 -m .venv/bin/activate`
+- Follow the setup script from the GitHub Action.
 - Build wheel: `python setup.py bdist_wheel`
 - Install locally: `pip install dist/promoted_python_delivery_client-1.3.1-py3-none-any.whl --force-reinstall`
 - Try it out:

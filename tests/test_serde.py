@@ -1,8 +1,9 @@
+import pytest
 from promoted_python_delivery_client.model.insertion import Insertion
 from promoted_python_delivery_client.model.properties import Properties
 from promoted_python_delivery_client.model.request import Request
 from promoted_python_delivery_client.model.user_info import UserInfo
-from promoted_python_delivery_client.client.serde import delivery_request_to_json, delivery_request_to_json_2, delivery_request_to_json_3
+from promoted_python_delivery_client.client.serde import delivery_request_to_json, delivery_request_to_json_2, delivery_request_to_json_3, delivery_reponse_from_json_2
 
 
 def test_delivery_request_to_json():
@@ -78,3 +79,22 @@ def test_delivery_request_with_insertion_matrix_to_json_keeps_empty():
     payload = delivery_request_to_json_3(req)
 
     assert "[[null]]" in payload
+
+
+def test_delivery_reponse_from_json_2():
+    response = delivery_reponse_from_json_2(
+        '{"requestId":"reqid", "insertion": []}'.encode('utf-8'))
+    assert response.request_id == 'reqid'
+    assert len(response.insertion) == 0
+
+
+def test_delivery_reponse_from_json_2_empty():
+    with pytest.raises(KeyError) as ex:
+        response = delivery_reponse_from_json_2('{}'.encode('utf-8'))
+    assert "request_id" in str(ex)
+
+
+def test_delivery_reponse_from_json_2_no_insertions():
+    response = delivery_reponse_from_json_2('{"requestId":"reqid"}'.encode('utf-8'))
+    assert response.request_id == 'reqid'
+    assert len(response.insertion) == 0

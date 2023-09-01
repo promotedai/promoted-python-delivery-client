@@ -33,8 +33,8 @@ class DeliveryRequestValidator():
 
         if request.user_info is None:
             validation_errors.append("Request.userInfo should be set")
-        elif not request.user_info.log_user_id:
-            validation_errors.append("Request.userInfo.logUserId should be set")
+        elif not request.user_info.anon_user_id:
+            validation_errors.append("Request.userInfo.anonUserId should be set")
 
         return validation_errors
 

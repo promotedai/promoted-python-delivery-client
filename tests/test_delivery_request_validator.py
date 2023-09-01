@@ -17,7 +17,7 @@ def test_request_must_be_set():
 
 def test_validate_request_id_must_be_unset_on_request():
     req = DeliveryRequest(
-        Request(insertion=[], user_info=UserInfo(log_user_id="a"), request_id="zzz"),
+        Request(insertion=[], user_info=UserInfo(anon_user_id="a"), request_id="zzz"),
         only_log=False)
     errors = DeliveryRequestValidator().validate(req, False)
     assert len(errors) == 1
@@ -26,7 +26,7 @@ def test_validate_request_id_must_be_unset_on_request():
 
 def test_validate_insertion_id_must_be_unset():
     req = DeliveryRequest(
-        Request(insertion=[Insertion(content_id="a", insertion_id="b")], user_info=UserInfo(log_user_id="a")),
+        Request(insertion=[Insertion(content_id="a", insertion_id="b")], user_info=UserInfo(anon_user_id="a")),
         only_log=False)
     errors = DeliveryRequestValidator().validate(req, False)
     assert len(errors) == 1
@@ -35,7 +35,7 @@ def test_validate_insertion_id_must_be_unset():
 
 def test_validate_insertion_start_must_be_non_neg():
     req = DeliveryRequest(
-        Request(insertion=[Insertion(content_id="a")], user_info=UserInfo(log_user_id="a")),
+        Request(insertion=[Insertion(content_id="a")], user_info=UserInfo(anon_user_id="a")),
         only_log=False,
         insertion_start=-1)
     errors = DeliveryRequestValidator().validate(req, False)
@@ -45,7 +45,7 @@ def test_validate_insertion_start_must_be_non_neg():
 
 def test_validate_content_id_must_be_set():
     req = DeliveryRequest(
-        Request(insertion=[Insertion(content_id="")], user_info=UserInfo(log_user_id="a")),
+        Request(insertion=[Insertion(content_id="")], user_info=UserInfo(anon_user_id="a")),
         only_log=False)
     errors = DeliveryRequestValidator().validate(req, False)
     assert len(errors) == 1
@@ -54,7 +54,7 @@ def test_validate_content_id_must_be_set():
 
 def test_validate_with_valid_insertion():
     req = DeliveryRequest(
-        Request(insertion=[Insertion(content_id="a")], user_info=UserInfo(log_user_id="a")),
+        Request(insertion=[Insertion(content_id="a")], user_info=UserInfo(anon_user_id="a")),
         only_log=False)
     errors = DeliveryRequestValidator().validate(req, False)
     assert len(errors) == 0
@@ -62,7 +62,7 @@ def test_validate_with_valid_insertion():
 
 def test_validate_experiment_valid():
     req = DeliveryRequest(
-        Request(insertion=[Insertion(content_id="a")], user_info=UserInfo(log_user_id="a")),
+        Request(insertion=[Insertion(content_id="a")], user_info=UserInfo(anon_user_id="a")),
         only_log=False,
         experiment=CohortMembership("my cohort", CohortArm.TREATMENT))
     errors = DeliveryRequestValidator().validate(req, False)
@@ -78,28 +78,28 @@ def test_validate_user_info_on_request():
     assert errors[0] == "Request.userInfo should be set"
 
 
-def test_validate_log_user_id_on_request():
+def test_validate_anon_user_id_on_request():
     req = DeliveryRequest(
-        Request(insertion=[Insertion(content_id="a")], user_info=UserInfo(log_user_id="")),
+        Request(insertion=[Insertion(content_id="a")], user_info=UserInfo(anon_user_id="")),
         only_log=False)
     errors = DeliveryRequestValidator().validate(req, False)
     assert len(errors) == 1
-    assert errors[0] == "Request.userInfo.logUserId should be set"
+    assert errors[0] == "Request.userInfo.anonUserId should be set"
 
 
 def test_validate_captures_multiple_errors():
     req = DeliveryRequest(
-        Request(insertion=[Insertion(content_id="a")], user_info=UserInfo(log_user_id=""), request_id="z"),
+        Request(insertion=[Insertion(content_id="a")], user_info=UserInfo(anon_user_id=""), request_id="z"),
         only_log=False)
     errors = DeliveryRequestValidator().validate(req, False)
     assert len(errors) == 2
     assert errors[0] == "Request.requestId should not be set"
-    assert errors[1] == "Request.userInfo.logUserId should be set"
+    assert errors[1] == "Request.userInfo.anonUserId should be set"
 
 
 def test_validate_with_only_matrix_headers():
     req = DeliveryRequest(
-        Request(insertion_matrix_headers=["contentId"], user_info=UserInfo(log_user_id="a")),
+        Request(insertion_matrix_headers=["contentId"], user_info=UserInfo(anon_user_id="a")),
         only_log=False)
     errors = DeliveryRequestValidator().validate(req, False)
     assert len(errors) == 1
@@ -109,7 +109,7 @@ def test_validate_with_only_matrix_headers():
 def test_validate_with_plain_and_matrix_insertions():
     req = DeliveryRequest(
         Request(insertion_matrix_headers=["contentId"], insertion_matrix=[["b"]],
-                insertion=[Insertion(content_id="a")], user_info=UserInfo(log_user_id="a")),
+                insertion=[Insertion(content_id="a")], user_info=UserInfo(anon_user_id="a")),
         only_log=False)
     errors = DeliveryRequestValidator().validate(req, False)
     assert len(errors) == 1
@@ -118,7 +118,7 @@ def test_validate_with_plain_and_matrix_insertions():
 
 def test_validate_with_invalid_matrix_header():
     req = DeliveryRequest(
-        Request(insertion_matrix_headers=["insertionId", "contentId"], insertion_matrix=[["b", "c"]], user_info=UserInfo(log_user_id="a")),
+        Request(insertion_matrix_headers=["insertionId", "contentId"], insertion_matrix=[["b", "c"]], user_info=UserInfo(anon_user_id="a")),
         only_log=False)
     errors = DeliveryRequestValidator().validate(req, False)
     assert len(errors) == 1
@@ -127,7 +127,7 @@ def test_validate_with_invalid_matrix_header():
 
 def test_validate_with_invalid_matrix_header():
     req = DeliveryRequest(
-        Request(insertion_matrix_headers=["d"], insertion_matrix=[["b"]], user_info=UserInfo(log_user_id="a")),
+        Request(insertion_matrix_headers=["d"], insertion_matrix=[["b"]], user_info=UserInfo(anon_user_id="a")),
         only_log=False)
     errors = DeliveryRequestValidator().validate(req, False)
     assert len(errors) == 1
@@ -136,7 +136,7 @@ def test_validate_with_invalid_matrix_header():
 
 def test_validate_with_valid_matrix():
     req = DeliveryRequest(
-        Request(insertion_matrix_headers=["contentId"], insertion_matrix=[["b"]], user_info=UserInfo(log_user_id="a")),
+        Request(insertion_matrix_headers=["contentId"], insertion_matrix=[["b"]], user_info=UserInfo(anon_user_id="a")),
         only_log=False)
     errors = DeliveryRequestValidator().validate(req, False)
     assert len(errors) == 0

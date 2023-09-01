@@ -57,7 +57,7 @@ def _build_request() -> Request:
     # Pad it out to 100 total insertions
     for num in range(96):
         insertion.append(Insertion(content_id=str(num).rjust(5, '0')))
-    return Request(insertion=insertion, user_info=UserInfo(log_user_id="abc"))
+    return Request(insertion=insertion, user_info=UserInfo(anon_user_id="abc"))
 
 
 def test_delivery_request_with_insertion_matrix_to_json():

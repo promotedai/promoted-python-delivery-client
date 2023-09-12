@@ -414,8 +414,8 @@ Here's an example using custom arm assignment logic (not using `twoArmExperiment
 
 ### Release
 
-- Create a development branch
-- `bump2version [major|minor|patch]`
+- Create a development branch.
+- `bump2version [major|minor|patch]`.  These are the strings (e.g. `major`).  This is not the version number.
 - Send a pull request and merge.
 - Clean out the `dist/` directory and build the wheel.
 - `python3 -m twine upload dist/*`

@@ -414,7 +414,7 @@ Here's an example using custom arm assignment logic (not using `twoArmExperiment
 
 ### Release
 
-- Create a development branch.
+- Create a development branch.  The following command will create a commit with the version update.
 - `bump2version [major|minor|patch]`.  These are the strings (e.g. `major`).  This is not the version number.
 - Send a pull request and merge.
 - Clean out the `dist/` directory and build the wheel.

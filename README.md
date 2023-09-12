@@ -49,7 +49,7 @@ Basic information about the request user.
 Field Name | Type | Optional? | Description
 ---------- | ---- | --------- | -----------
 `user_id` | str | Yes | The platform user id, cleared from Promoted logs.
-`log_user_id` | str | Yes | A different user id (presumably a UUID) disconnected from the platform user id (e.g. an "anonymous user id"), good for working with unauthenticated users or implementing right-to-be-forgotten.
+`anon_user_id` | str | Yes | A different user id (presumably a UUID) disconnected from the platform user id (e.g. an "anonymous user id"), good for working with unauthenticated users or implementing right-to-be-forgotten.
 `is_internal_user` | bool | Yes | If this user is a test user or not, defaults to false.
 
 ---
@@ -294,7 +294,7 @@ def get_products(req: ProductRequest):
         product_map[product.product_id] = product
 
     req = Request(insertion=insertion,
-                  user_info=UserInfo(log_user_id="abc"),
+                  user_info=UserInfo(anon_user_id="abc"),
                   paging=Paging(size=100, offset=0))
 
     delivery_req = DeliveryRequest(request=req)
@@ -345,11 +345,11 @@ def get_products(req: ProductRequest):
     products = ...; // Logic to get products from DB, apply filtering, etc.
 
     # This gets the anonymous user id from the request.
-    log_user_id = get_log_user_id(req)
-    experiment_membership = experimentConfig.check_membership(log_user_id)
+    anon_user_id = get_anon_user_id(req)
+    experiment_membership = experimentConfig.check_membership(anon_user_id)
 
     req = Request(insertion=insertion,
-                  user_info=UserInfo(log_user_id="abc"),
+                  user_info=UserInfo(anon_user_id="abc"),
                   paging=Paging(size=100, offset=0))
 
     # If experimentActivated can be false (e.g. only 5% of users get put into an experiment) and
@@ -372,8 +372,8 @@ Here's an example using custom arm assignment logic (not using `twoArmExperiment
     # (2) which arm to perform.
     #
     experimentMembership: CohortMembership = None
-    if is_user_activated(experimentName, log_user_id):
-        in_treatment = is_user_in_treatment_arm(experiment_name, log_user_id)
+    if is_user_activated(experimentName, anon_user_id):
+        in_treatment = is_user_in_treatment_arm(experiment_name, anon_user_id)
 
         # Only log if the user is activated into the experiment.
         experiment_membership = CohortMembership(cohort_id=experiment_name,

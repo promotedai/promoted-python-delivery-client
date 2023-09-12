@@ -42,7 +42,7 @@ insertion = [
 ]
 req = Request(
   insertion=insertion,
-  user_info=UserInfo(log_user_id="abc"),
+  user_info=UserInfo(anon_user_id="abc"),
   device=Device(
     browser=Browser(
       user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',

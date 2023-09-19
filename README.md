@@ -393,7 +393,7 @@ Here's an example using custom arm assignment logic (not using `twoArmExperiment
 
 - Follow the setup script from the GitHub Action.
 - Build wheel: `python setup.py bdist_wheel`
-- Install locally: `pip install dist/promoted_python_delivery_client-1.3.1-py3-none-any.whl --force-reinstall`
+- Install locally: `pip install dist/promoted_python_delivery_client-2.0.0-py3-none-any.whl --force-reinstall`
 - Try it out:
   - See the `scripts/` directory.
   - Create a `scripts/.env` file with a few variables:
@@ -414,8 +414,8 @@ Here's an example using custom arm assignment logic (not using `twoArmExperiment
 
 ### Release
 
-- Create a development branch
-- `bump2version [major|minor|patch]`
+- Create a development branch.  The following command will create a commit with the version update.
+- `bump2version [major|minor|patch]`.  These are the strings (e.g. `major`).  This is not the version number.
 - Send a pull request and merge.
 - Clean out the `dist/` directory and build the wheel.
 - `python3 -m twine upload dist/*`

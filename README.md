@@ -420,6 +420,7 @@ Here's an example using custom arm assignment logic (not using `twoArmExperiment
 - Clean out the `dist/` directory and build the wheel.
 - `python3 -m twine upload dist/*`
   - [PyPi](https://pypi.org/project/promoted-python-delivery-client/)
+  - You should use an account with MFA setup.  Follow the API token UI for the username and password.
   - FUTURE: Do this with a Github Action.
 
 ### Dependencies

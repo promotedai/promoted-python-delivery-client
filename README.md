@@ -394,7 +394,7 @@ Here's an example using custom arm assignment logic (not using `twoArmExperiment
 
 - Follow the setup script from the GitHub Action.
 - Build wheel: `python setup.py bdist_wheel`
-- Install locally: `pip install dist/promoted_python_delivery_client-2.0.0-py3-none-any.whl --force-reinstall`
+- Install locally: `pip install dist/promoted_python_delivery_client-2.1.0-py3-none-any.whl --force-reinstall`
 - Try it out:
   - See the `scripts/` directory.
   - Create a `scripts/.env` file with a few variables:

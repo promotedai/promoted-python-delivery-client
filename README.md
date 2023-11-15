@@ -418,10 +418,11 @@ Here's an example using custom arm assignment logic (not using `twoArmExperiment
 - Create a development branch.  The following command will create a commit with the version update.
 - `bump2version [major|minor|patch]`.  These are the strings (e.g. `major`).  This is not the version number.
 - Send a pull request and merge.
-- Clean out the `dist/` directory and build the wheel.
+- Clear dist: `rm -rf dist/`
+- Build wheel: `python setup.py bdist_wheel`
 - `python3 -m twine upload dist/*`
   - [PyPi](https://pypi.org/project/promoted-python-delivery-client/)
-  - You should use an account with MFA setup.  Follow the API token UI for the username and password.
+  - You should use an account with MFA setup.  Follow the API token UI for the username and password.  Username is `__token__`.  Password is the API key from the UI.
   - FUTURE: Do this with a Github Action.
 
 ### Dependencies

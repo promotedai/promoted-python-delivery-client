@@ -28,6 +28,7 @@ class Request:
     auto_view_id: Optional[str] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
     blender_config: Optional[BlenderConfig] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
     debug: Optional[bool] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
+    disable_personalization: Optional[bool] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
     paging: Optional[Paging] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
     platform_id: Optional[int] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore
     properties: Optional[Properties] = field(default=None, metadata=config(exclude=lambda v: v is None))  # type: ignore

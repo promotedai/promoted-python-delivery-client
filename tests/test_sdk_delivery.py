@@ -5,7 +5,7 @@ from promoted_python_delivery_client.model.insertion import Insertion
 from promoted_python_delivery_client.model.paging import Paging
 from promoted_python_delivery_client.model.properties import Properties
 from promoted_python_delivery_client.model.request import Request
-from tests.utils_testing import create_test_request_insertions
+from tests.utils_testing import create_test_request_insertions, create_test_request_insertions_with_insertion_ids
 
 
 def test_invalid_paging_offset_and_insertion_start():
@@ -169,4 +169,36 @@ def test_response_insertions_only_have_key_fields2():
     resp = SDKDelivery().run_delivery(dreq)
 
     assert resp.insertion[0].content_id == "b"
+    assert len(resp.insertion[0].insertion_id) == 36
     assert resp.insertion[1].content_id == "d"
+    assert len(resp.insertion[1].insertion_id) == 36
+
+
+def test_insertion_pass_through_request_insertion_ids():
+    insertion_start = 5
+    req = Request(insertion=create_test_request_insertions_with_insertion_ids(3),
+                  paging=Paging(size=2, offset=5))
+    dreq = DeliveryRequest(req, insertion_start=insertion_start)
+    resp = SDKDelivery().run_delivery(dreq)
+    assert req.request_id is not None
+    assert len(req.request_id) > 0
+    assert len(resp.insertion) == 2
+
+    assert resp.insertion[0].content_id == "0"
+    assert resp.insertion[0].position == 5
+    assert resp.insertion[0].insertion_id == "ins0"
+    assert resp.insertion[1].content_id == "1"
+    assert resp.insertion[1].position == 6
+    assert resp.insertion[1].insertion_id == "ins1"
+
+
+def test_response_insertions_matrix_pass_through_request_insertion_ids():
+    req = Request(insertion_matrix_headers=["contentId", "insertionId"], insertion_matrix=[["a", "ins0"], ["c", "ins1"]])
+    dreq = DeliveryRequest(req)
+    resp = SDKDelivery().run_delivery(dreq)
+
+    assert resp.insertion[0].content_id == "a"
+    assert resp.insertion[0].insertion_id == "ins0"
+    assert resp.insertion[1].content_id == "c"
+    assert resp.insertion[1].insertion_id == "ins1"
+# TODO - pass through matrix req_ins_id.
